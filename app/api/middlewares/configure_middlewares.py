@@ -25,5 +25,5 @@ def configure_middlewares(app: FastAPI, settings: ApiSettings) -> None:
         update_request_header=True,
         generator=lambda: get_trace_id(),
     )
-
+    
     app.add_middleware(GZipMiddleware, minimum_size=1000)

@@ -45,6 +45,10 @@ def add_health_check_router(app: FastAPI, prefix: str = "/api") -> None:
         service: "HealthCheckService" = Depends(Provide[Container.health_check_service]),
     ):
         # XXX Fixado.
-        return {"version": "0.0.2"}
+        return {
+            "version": "0.0.1"
+        }
+
+        
 
     app.include_router(health_router)

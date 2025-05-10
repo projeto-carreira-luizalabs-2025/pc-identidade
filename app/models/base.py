@@ -12,7 +12,7 @@ class UuidModel(BaseModel):
 
 
 class AuditModel(BaseModel):
-    created_at: datetime | None = Field(default_factory=utcnow, description="Data e hora da criação")
+    created_at: datetime = Field(default_factory=utcnow, description="Data e hora da criação")
     updated_at: datetime | None = Field(None, description="Data e hora da atualização")
     created_by: str | None = Field(None, description="Criado por")
     updated_by: str | None = Field(None, description="Atualizado por")

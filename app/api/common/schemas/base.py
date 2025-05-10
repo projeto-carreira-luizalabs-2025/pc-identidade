@@ -10,17 +10,13 @@ class UuidSchema(SchemaType):
 
 
 class OwnershipSchema(SchemaType):
-    """
-    Em obras
-    """
-
-    ...
+    tenant_id: str = Field(..., description="Código do tenant ao qual pertence o item")
 
 
 class AuditSchema(SchemaType):
-    created_at: datetime | None = Field(None, description="Data e hora da criação")
+    created_at: datetime = Field(..., description="Data e hora da criação")
     updated_at: datetime | None = Field(None, description="Data e hora da atualização")
-    created_by: str | None = Field(None, description="Criado por")
+    created_by: str = Field(..., description="Criado por")
     updated_by: str | None = Field(None, description="Atualizado por")
 
 

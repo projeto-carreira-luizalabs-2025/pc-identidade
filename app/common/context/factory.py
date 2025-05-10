@@ -12,8 +12,7 @@ def set_context(context: AppContext):
 
 
 def get_context() -> AppContext:  # pragma: no cover
-
     if context := _app_context.get():
         return context
-    # XXX Não pronto!
+
     raise ForbiddenException()

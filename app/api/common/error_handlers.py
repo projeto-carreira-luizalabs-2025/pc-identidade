@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from pydantic_core import ValidationError
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from app.common.error_codes import ErrorCodes
 from app.common.exceptions import ApplicationException
@@ -17,7 +18,7 @@ async def _get_request_body(request: Request) -> dict | None:
         return json.loads(await request.body())
     except Exception as ex:
         # XXX Informar que deu erro
-        print(":-( ", ex)
+        ...
     return None
 
 

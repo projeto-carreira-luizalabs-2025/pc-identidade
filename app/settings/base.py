@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from enum import StrEnum
 from os import environ
 from typing import Tuple, Type
