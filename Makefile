@@ -23,10 +23,11 @@ clean:
 	@rm -f .env.bkp*
 
 build-venv:
-	python3.12 -m venv venv
+	python -m venv venv
 
 requirements-dev:
-	pip install --upgrade pip
+	python -m pip install --upgrade pip
+	python -m pip install --upgrade pip wheel setuptools
 	@pip install -r requirements/develop.txt
 
 

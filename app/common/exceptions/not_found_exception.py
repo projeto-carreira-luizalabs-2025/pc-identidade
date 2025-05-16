@@ -12,8 +12,10 @@ class NotFoundException(ApplicationException):
     def __init__(
         self,
         details: list["ErrorDetail"] | None = None,
+        message: str | None = None,
     ):
         super().__init__(
             error_info=ErrorCodes.NOT_FOUND.value,
             details=details,
+            message=message
         )

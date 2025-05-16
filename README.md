@@ -5,6 +5,8 @@
 O projeto pc-identidade é responsável por estruturar e definir quem é o varejista dentro do sistema do marketplace. A proposta é identificar, validar e organizar as informações que permitem que o varejista seja reconhecido, aprovado e integrado com segurança e clareza ao ecossistema do marketplace.
 Esta camada de identidade será essencial para garantir a confiabilidade dos vendedores na plataforma, atender requisitos legais, e oferecer um processo de onboarding eficiente.
 
+[Documentação do Projeto](https://docs.google.com/document/d/11eIj0-f68q7rLtMQsC7VShPTmDfvgnPDPt6HPMMM_Z4/edit?tab=t.0#heading=h.4bbpjvh4rnth)
+
 ## 🎯 Objetivos principais:
 - Identificação e validação da identidade do varejista
 - Recolhimento e análise de dados/documentos obrigatórios
@@ -14,11 +16,10 @@ Esta camada de identidade será essencial para garantir a confiabilidade dos ven
 
 ## 👥 Participantes do Time:
 
+- João Pedro
 - Marcella Palazzo
 - Murilo Alves
 - Victor Hugo Buiatti
-- João Pedro
-- Robson Vieira Souza
 
 ## ✨ Configuração do ambiente local
 
