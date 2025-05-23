@@ -9,11 +9,5 @@ if TYPE_CHECKING:
 
 
 class NotFoundException(ApplicationException):
-    def __init__(
-        self,
-        details: list["ErrorDetail"] | None = None,
-    ):
-        super().__init__(
-            error_info=ErrorCodes.NOT_FOUND.value,
-            details=details,
-        )
+    def __init__(self, details: list["ErrorDetail"] | None = None):
+        super().__init__(error_info=ErrorCodes.NOT_FOUND.value, details=details)

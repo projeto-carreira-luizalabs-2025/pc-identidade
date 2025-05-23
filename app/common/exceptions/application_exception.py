@@ -10,13 +10,9 @@ if TYPE_CHECKING:
 
 
 class ApplicationException(HTTPException):
-    def __init__(
-        self,
-        error_info: ErrorInfo,
-        details: list["ErrorDetail"] | None = None,
-    ):
+    def __init__(self, error_info: ErrorInfo, details: list["ErrorDetail"] | None = None, message: str | None = None):
         self.slug = error_info.slug
-        self.message = error_info.message
+        self.message = message or error_info.message
         self.status_code = error_info.http_code
         self.details = details
 

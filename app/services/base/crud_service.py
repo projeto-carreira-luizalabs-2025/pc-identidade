@@ -1,7 +1,9 @@
 from typing import Any, Generic, TypeVar
 
 from app.api.common.schemas import Paginator
+from app.common.exceptions.not_found_exception import NotFoundException
 from app.models.base import PersistableEntity
+from app.models.seller_model import Seller
 from app.repositories import AsyncCrudRepository
 
 T = TypeVar("T", bound=PersistableEntity)

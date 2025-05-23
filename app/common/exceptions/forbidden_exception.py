@@ -12,5 +12,6 @@ class ForbiddenException(ApplicationException):
     def __init__(
         self,
         details: list["ErrorDetail"] | None = None,
+        message: str | None = None,
     ):
-        super().__init__(error_info=ErrorCodes.FORBIDDEN.value, details=details)
+        super().__init__(error_info=ErrorCodes.FORBIDDEN.value, details=details, message=message)
