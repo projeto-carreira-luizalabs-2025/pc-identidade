@@ -45,7 +45,6 @@ def add_error_handlers(app: FastAPI):
         errors = exc.errors()
         details: list[ErrorDetail] = []
         for error in errors:
-            ctx = error.get("ctx", {})
 
             details.append(
                 ErrorDetail(
@@ -54,7 +53,6 @@ def add_error_handlers(app: FastAPI):
                         "location": error["loc"][0],
                         "slug": error["type"],
                         "field": ", ".join(map(str, error["loc"][1:])),
-                        "ctx": ctx,
                     }
                 )
             )

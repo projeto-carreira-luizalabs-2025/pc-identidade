@@ -1,4 +1,4 @@
 from .health_check.service import HealthCheckService
-from .something_service import SomethingService
+from .seller_service import SellerService
 
-__all__ = ["HealthCheckService", "SomethingService"]
+__all__ = ["HealthCheckService", "SellerService"]
