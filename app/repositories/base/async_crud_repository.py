@@ -35,6 +35,12 @@ class AsyncCrudRepository(ABC, Generic[T]):
         """
 
     @abstractmethod
+    async def patch(self, seller_id: str, update_fields: dict) -> T | None:
+        """
+        Atualiza parcialmente uma entidade existente no repositório.
+        """
+
+    @abstractmethod
     async def delete_by_id(self, entity_id: str) -> bool:
         """
         Remove uma entidade pelo seu identificador único.

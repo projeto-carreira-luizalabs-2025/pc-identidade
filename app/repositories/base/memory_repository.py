@@ -13,6 +13,8 @@ T = TypeVar("T", bound=BaseModel)
 ID = TypeVar("ID", bound=UUID)
 Q = TypeVar("Q", bound=QueryModel)
 
+DEFAULT_USER = "system"
+
 class AsyncMemoryRepository(AsyncCrudRepository[T], Generic[T]):
 
     def __init__(self, client: MongoClient, collection_name: str, model_class: Type[T]):
@@ -27,51 +29,57 @@ class AsyncMemoryRepository(AsyncCrudRepository[T], Generic[T]):
         self.model_class = model_class
 
     async def create(self, entity: T) -> T:
+        now = utcnow()
         entity_dict = entity.model_dump(by_alias=True)
-        entity_dict["seller_id"] = str(entity.seller_id)
-        entity_dict["created_at"] = utcnow()
-        entity_dict["updated_at"] = utcnow()
+        entity_dict.setdefault("created_at", now)
+        entity_dict.setdefault("updated_at", now)
+        entity_dict.setdefault("created_by", DEFAULT_USER)
+        entity_dict.setdefault("updated_by", DEFAULT_USER)
+        entity_dict.setdefault("audit_created_at", now)
+        entity_dict.setdefault("audit_updated_at", now)
         await self.collection.insert_one(entity_dict)
         return self.model_class(**entity_dict)
 
-    async def find_by_id(self, seller_id: str | UUID) -> T | None:
-        if isinstance(seller_id, UUID):
-            seller_id = str(seller_id)
-        result = await self.collection.find_one({"seller_id": seller_id})
-        if result is not None:
-            result = self.model_class(**result)
-        return result
+    async def find_by_id(self, seller_id: Any) -> Optional[T]:
+        result = await self.collection.find_one({"seller_id": str(seller_id)})
+        if result:
+            return self.model_class(**result)
+        return None
 
     async def find(self, filters: dict, limit: int = 10, offset: int = 0, sort: Optional[dict] = None) -> List[T]:
-        filtered_list = self.find(filters)
+        cursor = self.collection.find(filters)
+        if sort:
+            # sort: {"field": 1/-1}
+            cursor = cursor.sort(list(sort.items()))
+        cursor = cursor.skip(offset).limit(limit)
+        results = []
+        async for doc in cursor:
+            results.append(self.model_class(**doc))
+        return results
 
-        # Aplica filtros dinamicamente
-        for key, value in filters.items():
-            filtered_list = [item for item in filtered_list if getattr(item, key, None) == value]
-
-        # TODO: aplicar ordenação por sort se necessário
-
-        return await filtered_list[offset : offset + limit]
-
-    async def update(self, entity_id: ID, entity: Any) -> Optional[T]:
-        # Converte a entidade para um dicionário, excluindo campos desnecessários
+    async def update(self, seller_id: str, entity: Any) -> Optional[T]:
+        # PUT: substitui todos os campos (menos _id)
         entity_dict = entity.model_dump(by_alias=True, exclude={"identity"})
-        entity_dict["updated_at"] = utcnow()
-
-        # Busca o documento atual pelo ID
-        current_document = await self.find_by_id(entity_id)
-
-        if current_document:
-            # Atualiza os campos diretamente no objeto existente
-            for key, value in entity_dict.items():
-                setattr(current_document, key, value)
-
-            return current_document
-
+        result = await self.collection.find_one_and_update(
+            {"seller_id": str(seller_id)},
+            {"$set": entity_dict},
+            return_document=True
+        )
+        if result:
+            return self.model_class(**result)
         return None
     
-    async def delete(self, filter: dict) -> bool:
-        # XXX Atenção aqui!
-        deleted = await self.collection.delete_many(filter)
-        has_deleted = deleted.deleted_count > 0
-        return has_deleted
+    async def delete_by_id(self, seller_id: str) -> bool:
+        result = await self.collection.delete_one({"seller_id": str(seller_id)})
+        return result.deleted_count > 0
+    
+    async def patch(self, seller_id: str, update_fields: dict) -> Optional[T]:
+        # PATCH: atualiza só os campos enviados
+        result = await self.collection.find_one_and_update(
+            {"seller_id": str(seller_id)},
+            {"$set": update_fields},
+            return_document=True
+        )
+        if result:
+            return self.model_class(**result)
+        return None

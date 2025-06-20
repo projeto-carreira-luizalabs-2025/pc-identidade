@@ -8,7 +8,7 @@ from app.common.datetime import utcnow
 
 
 class UuidModel(BaseModel):
-    id: UuidType = Field(default_factory=uuid7, alias="_id")
+    pass
 
 
 class AuditModel(BaseModel):

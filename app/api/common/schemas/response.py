@@ -12,6 +12,8 @@ T = TypeVar("T")
 
 PAGE_MAX_LIMIT = api_settings.pagination.max_limit
 
+DESCRIPTION_ERROR = "Descrição do erro"
+
 
 class PageResponse(BaseModel):
     limit: int | None = Field(
@@ -50,12 +52,12 @@ class ListResponse(BaseModel, Generic[T]):
     results: Sequence[T] | None = Field(None, description="The content of the response")
 
 
-type ErrorLocation = Literal["query", "path", "body", "header"]  # type: ignore[valid-type]
+ErrorLocation = Literal["query", "path", "body", "header"]  # type: ignore[valid-type]
 
 
 class ErrorDetail(BaseModel):
-    message: str = Field(..., description="Descrição do erro")
-    location: ErrorLocation | None = Field(None, description="Descrição do erro")
+    message: str = Field(..., description=DESCRIPTION_ERROR)
+    location: ErrorLocation | None = Field(None, description=DESCRIPTION_ERROR)
     slug: str | None = Field(None, description="Identificação do erro")
     field: str | None = Field(None, description="Campo que gerou o erro")
     ctx: dict | None = Field(None, description="Contexto do erro")
@@ -63,7 +65,7 @@ class ErrorDetail(BaseModel):
 
 class ErrorResponse(BaseModel):
     slug: str = Field(..., description="Identificação do erro")
-    message: str = Field(..., description="Descrição do erro")
+    message: str = Field(..., description=DESCRIPTION_ERROR)
     details: None | list[ErrorDetail] = Field(..., description="Detalhes do erro")
 
 

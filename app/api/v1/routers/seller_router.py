@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING, Optional
-import uuid
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.common.schemas import ListResponse, Paginator, UuidType, get_request_pagination
+from app.api.common.schemas import ListResponse, Paginator, get_request_pagination
 from app.container import Container
 from app.models.seller_model import Seller
 from app.models.seller_patch_model import SellerPatch
@@ -81,10 +80,7 @@ async def get_by_id_or_cnpj(
 )
 @inject
 async def create(seller: SellerCreate, seller_service: "SellerService" = Depends(Provide[Container.seller_service]),):
-    seller_data = seller.dict(exclude={"seller_id"})
-    seller_data["seller_id"] = uuid.uuid4()
-    seller_obj = Seller(**seller_data)
-    return await seller_service.create(seller_obj)
+    return await seller_service.create(seller)
 
 
 @router.patch(

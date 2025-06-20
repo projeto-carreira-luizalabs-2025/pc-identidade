@@ -44,7 +44,7 @@ count = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
+# asyncio_default_fixture_loop_scope = "function" 
 # https://stackoverflow.com/a/63498715/6039697
 disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
 testpaths = [
