@@ -61,8 +61,15 @@ async def get(
     """
     Retorna todos os sellers cadastrados no sistema
     """
-    results = await seller_service.find(paginator=paginator)
-    return paginator.paginate(results=results)
+    filters = {}
+    results = await seller_service.find(
+        filters=filters,
+        limit=paginator.limit,
+        offset=paginator.offset,
+        sort=paginator.get_sort_order()
+    )
+
+    return paginator.paginate(results=results, filters=filters)
 
 
 @router.get(
@@ -73,39 +80,6 @@ async def get(
     status_code=status.HTTP_200_OK,
     summary="Buscar Seller por ID ou CNPJ",
 )
-@inject
-async def get_by_id_or_cnpj(
-    seller_id: Optional[str] = Query(None),
-    cnpj: Optional[str] = Query(None),
-    seller_service: "SellerService" = Depends(Provide["seller_service"]),
-    auth_info: UserAuthInfo = Depends(get_current_user_info),
-):
-    """
-    Busca um seller por seller_id ou cnpj.
-    Se ambos os parâmetros forem fornecidos, busca um seller que tenha exatamente esse seller_id E esse cnpj.
-    Pelo menos um dos parâmetros deve ser fornecido.
-    Validação de acesso é feita para o seller_id encontrado.
-    """
-    if not seller_id and not cnpj:
-        raise HTTPException(status_code=400, detail="seller_id ou cnpj deve ser fornecido")
-
-    try:
-        if seller_id and cnpj:
-            # Busca por seller_id e valida se o cnpj também bate
-            seller = await _find_seller_by_id_with_access_check(seller_id, auth_info, seller_service)
-            if seller.cnpj != cnpj:
-                raise HTTPException(status_code=404, detail="Seller não encontrado com os critérios fornecidos")
-            return seller
-        elif seller_id:
-            # Busca apenas por seller_id
-            return await _find_seller_by_id_with_access_check(seller_id, auth_info, seller_service)
-        else:  # apenas cnpj
-            # Busca apenas por cnpj
-            return await _find_seller_by_cnpj_with_access_check(cnpj, auth_info, seller_service)
-    except Exception as e:
-        if "não tem permissão" in str(e) or "acesso não permitido" in str(e):
-            raise HTTPException(status_code=404, detail=SELLER_NOT_FOUND_OR_ACCESS_DENIED)
-        raise
 
 
 @router.get(

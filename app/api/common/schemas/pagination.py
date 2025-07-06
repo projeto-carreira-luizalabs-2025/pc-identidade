@@ -77,25 +77,29 @@ class Paginator(BaseModel):
 
 def get_request_pagination(
     request: Request,
-    _limit: int | None = Query(
-        default=50,
+    limit: int = Query(
+        default=PAGE_DEFAULT_LIMIT, # Usa o default das suas configurações
         ge=1,
         le=PAGE_MAX_LIMIT,
         description="Determina a quantidade de registros a serem retornados.",
+        alias="_limit" # Permite que a URL use ?_limit=...
     ),
-    _offset: int | None = Query(
+    offset: int = Query(
         default=0,
         ge=0,
-        le=PAGE_MAX_LIMIT,
         description=("Posição do registro de referência, a partir dele serão retornados os próximos N registros."),
+        alias="_offset" # Permite que a URL use ?_offset=...
     ),
-    _sort: str | None = Query(
+    sort: str | None = Query(
         default=None,
         description=(
-            "Ordena pelo(s) campo(s). Use o sufixo :asc e :desc para ordenação"
-            " ascendente e descendente, respectivamente."
-            " Ex: name:asc,email:desc."
+            "Ordena pelo(s) campo(s). Use o sufixo :asc e :desc para ordenação ascendente e descendente."
         ),
+        alias="_sort" # Permite que a URL use ?_sort=...
     ),
-):
-    return Paginator(request_path=request.url.path, limit=_limit, offset=_offset, sort=_sort)
+) -> Paginator:
+    """
+    Lê os parâmetros de paginação da query string e retorna um objeto Paginator.
+    """
+    return Paginator(request_path=request.url.path, limit=limit, offset=offset, sort=sort)
+

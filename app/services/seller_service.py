@@ -1,6 +1,7 @@
 import os
 
 import logging
+from datetime import datetime
 
 from fastapi import HTTPException, status
 
@@ -17,7 +18,7 @@ from app.messages import (
 from app.models.seller_model import Seller
 from app.models.seller_patch_model import SellerPatch
 from app.repositories.seller_repository import SellerRepository
-
+from app.api.v1.schemas.seller_schema import SellerCreate, SellerReplace
 from ..models import Seller
 from ..repositories import SellerRepository
 from .base import CrudService
@@ -49,6 +50,8 @@ class SellerService(CrudService[Seller, str]):
 
         now = utcnow()
 
+        birth_date_as_datetime = datetime.combine(data.legal_rep_birth_date, datetime.min.time())
+
         seller_to_create = Seller(
             seller_id=data.seller_id,
             company_name=data.company_name,
@@ -62,7 +65,7 @@ class SellerService(CrudService[Seller, str]):
             legal_rep_cpf=data.legal_rep_cpf,
             legal_rep_rg_number=data.legal_rep_rg_number,
             legal_rep_rg_state=data.legal_rep_rg_state,
-            legal_rep_birth_date=data.legal_rep_birth_date,
+            legal_rep_birth_date=birth_date_as_datetime,
             legal_rep_phone=data.legal_rep_phone,
             legal_rep_email=data.legal_rep_email,
             bank_name=data.bank_name,
@@ -72,6 +75,7 @@ class SellerService(CrudService[Seller, str]):
             uploaded_documents=data.uploaded_documents,
             product_categories=data.product_categories,
             business_description=data.business_description,
+            # Preenche os campos de auditoria
             created_at=now,
             updated_at=now,
             created_by=user_identifier,
@@ -102,7 +106,6 @@ class SellerService(CrudService[Seller, str]):
             logger.error(
                 f"Falha ao atualizar o usuário no Keycloak após criar o seller '{data.seller_id}'. Reversão manual pode ser necessária.",
                 exc_info=True)
-            # Considere uma lógica de compensação aqui se necessário
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail="Seller criado, mas falha ao atualizar permissões do usuário.")
 

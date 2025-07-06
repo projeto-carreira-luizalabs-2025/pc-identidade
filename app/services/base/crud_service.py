@@ -1,4 +1,4 @@
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, Optional, List
 
 from app.api.common.schemas import Paginator
 from app.common.exceptions.not_found_exception import NotFoundException
@@ -29,9 +29,16 @@ class CrudService(Generic[T, ID]):
     async def find_by_id(self, entity_id: ID) -> T | None:
         return await self.repository.find_by_id(entity_id)
 
-    async def find(self, paginator: Paginator, filters: dict) -> list[T]:
+    async def find(self, filters: dict, limit: int, offset: int, sort: Optional[dict] = None) -> List[Seller]:
+        """
+        Busca sellers no repositório e repassa os parâmetros de paginação.
+        """
+
         return await self.repository.find(
-            filters=filters, limit=paginator.limit, offset=paginator.offset, sort=paginator.get_sort_order()
+            filters=filters,
+            limit=limit,
+            offset=offset,
+            sort=sort
         )
 
     async def update(self, entity_id: ID, entity: Any) -> T:
