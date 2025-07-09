@@ -27,12 +27,18 @@ clean:
 
 build-venv:
 	python3.12 -m venv venv
+	source ./venv/bin/activate
 
 requirements-dev:
 	python3.12 -m pip install --upgrade pip
 	python3.12 -m pip install --upgrade pip wheel setuptools
 	@pip install -r requirements/develop.txt
 
+docker-build:
+	docker-compose up --build -d
+
+auth-build-configuration:
+	python devtools/keycloak-config/setup_sellers_attribute.py
 
 lint:
 	isort ${APP_DIR} ${ROOT_TESTS_DIR}
@@ -99,20 +105,12 @@ else
 	@ENV=dev $(INIT) --reload
 endif
 
-docker-build:
-	docker build -f $(DOCKERFILE_PATH) -t $(DOCKER_IMAGE_NAME) .
 
 docker-run:
 	docker run --rm --name $(CONTAINER_NAME) -e ENV=dev -p 8000:8000 $(DOCKER_IMAGE_NAME)
 
 docker-shell:
 	docker run --rm -it --name $(CONTAINER_NAME) -e ENV=dev $(DOCKER_IMAGE_NAME) /bin/bash
-
-docker-compose-mongo-up:
-	docker compose -f ./devtools/docker/docker-compose-mongo.yml up -d
-
-docker-compose-mongo-down:
-	docker compose -f ./devtools/docker/docker-compose-mongo.yml down
 
 docker-compose-sonar-up:
 	docker compose -f ./devtools/docker/docker-compose-sonar.yml up -d

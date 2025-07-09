@@ -54,11 +54,11 @@ class KeycloakAdminClient:
             "firstName": first_name or '',
             "lastName": last_name or '',
             "enabled": True,
-            "emailVerified": True,
+            "emailVerified": False,
             "credentials": [{"type": "password", "value": password, "temporary": False}],
             "attributes": {"sellers": sellers},
             "realmRoles": ["offline_access", "uma_authorization"],
-            "requiredActions": [],
+            "requiredActions": ["VERIFY_EMAIL"],
         }
 
         users_url = f"{self.base_url}/users"
@@ -206,5 +206,4 @@ class KeycloakAdminClient:
         else:
             logger.warning(
                 f"O seller '{seller_to_remove}' não foi encontrado nos atributos do usuário '{user_id}'. Nenhuma alteração foi feita.")
-
 

@@ -1,4 +1,18 @@
 {
+    "verifyEmail": true,
+    "loginWithEmailAllowed": true,
+    "eventsListeners": [
+        "jboss-logging",
+        "email"
+    ],
+    "smtpServer": {
+        "from": "joaopedrovr91@gmail.com",
+        "fromDisplayName": "PC-Identidade",
+        "host": "smtp.gmail.com",
+        "port": "587",
+        "auth": "true",
+        "starttls": "true"
+    },
     "realm": "marketplace",
     "enabled": true,
     "registrationAllowed": true,

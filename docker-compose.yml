@@ -47,6 +47,15 @@ services:
       KC_FEATURES: token-exchange
       KC_IMPORT_FILES: /opt/keycloak/data/import/marketplace-realm.json
       KC_IMPORT_STRATEGY: ignore_existing
+      # Configurações para envio de email via Keycloak
+      KC_SMTP_SERVER_HOST: smtp.gmail.com
+      KC_SMTP_SERVER_PORT: 587
+      KC_SMTP_SERVER_AUTH: "true"
+      KC_SMTP_SERVER_STARTTLS: "true"
+      KC_SMTP_SERVER_USER: joaopedrovr91@gmail.com
+      KC_SMTP_SERVER_PASSWORD: "[INSERIR SENHA DE APP AQ]"
+      KC_SPI_EMAIL_FROM: joaopedrovr91@gmail.com
+      KC_SPI_EMAIL_FROM_NAME: "PC-Identidade"
     volumes:
       - ./devtools/keycloak-config:/opt/keycloak/data/import
     depends_on:
