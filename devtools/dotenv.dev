@@ -1,5 +1,5 @@
 ENV=dev
-APP_DB_URL_MONGO=mongodb://admin:admin@localhost:27017/bd01?authSource=admin&connectTimeoutMS=1000&socketTimeoutMS=1000
+APP_DB_URL_MONGO="mongodb+srv://admin:admin@cluster0.oszucbv.mongodb.net/pc_identidade?retryWrites=true&w=majority&appName=Cluster0"
 MONGO_DB=bd01
 
 # Configurações do Keycloak

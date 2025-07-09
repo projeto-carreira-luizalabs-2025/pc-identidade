@@ -9,7 +9,7 @@ Este documento descreve o serviço de webhook implementado para enviar mensagens
 Adicione a seguinte variável ao seu arquivo `.env`:
 
 ```properties
-WEBHOOK_URL=<sua-url-do-webhook-aqui>
+WEBHOOK_URL=https://hooks.slack.com/services/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
 ```
 
 Esta URL será usada para enviar todas as mensagens de log.

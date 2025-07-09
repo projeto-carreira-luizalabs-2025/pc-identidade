@@ -1,12 +1,16 @@
 from typing import List
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status, Path, HTTPException
+from pydantic import BaseModel
 
 from app.api.common.auth_handler import get_current_user_info, UserAuthInfo, require_admin_user
 from app.common.exceptions import ForbiddenException
 from app.container import Container
 from app.services.user_service import UserService
-from app.api.v1.schemas.user_schema import UserCreate, UserResponse, UserPatch
+from app.api.v1.schemas.user_schema import UserCreate, UserResponse, LoginRequest, UserPatch
+
+import httpx
+import jwt
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -29,6 +33,52 @@ async def create_user(
     """
     return await user_service.create_user(user_data)
 
+@router.post(
+    "/login",
+    summary="Realiza login no Keycloak e retorna o token de acesso",
+    status_code=status.HTTP_200_OK
+)
+async def login_user(login_data: LoginRequest):
+    """
+    Realiza autenticação no Keycloak via Resource Owner Password Credentials Grant.
+    """
+    keycloak_token_url = "http://localhost:8080/realms/marketplace/protocol/openid-connect/token"
+
+    data = {
+        "grant_type": "password",
+        "client_id": "admin-cli",
+        "username": login_data.username,
+        "password": login_data.password,
+    }
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(keycloak_token_url, data=data, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
+    token_data = response.json()
+
+    try:
+        # Decodifica o token sem validar assinatura para extrair claims
+        decoded = jwt.decode(token_data["access_token"], options={"verify_signature": False})
+        return {
+            "access_token": token_data["access_token"],
+            "refresh_token": token_data.get("refresh_token"),
+            "email": decoded.get("email"),
+            "seller_id": decoded.get("preferred_username"),
+            "nome_fantasia": decoded.get("given_name", ""),
+            "cnpj": decoded.get("cnpj", "")
+        }
+    except Exception:
+        return {
+            "access_token": token_data["access_token"],
+            "refresh_token": token_data.get("refresh_token")
+        }
 
 @router.get(
     "/{user_id}",

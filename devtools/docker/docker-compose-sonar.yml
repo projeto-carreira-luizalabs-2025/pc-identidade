@@ -20,7 +20,7 @@ services:
     image: postgres:13
     container_name: sonarqube-db-dev
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_USER=sonar
       - POSTGRES_PASSWORD=sonar

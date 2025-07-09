@@ -11,7 +11,7 @@ class AppSettings(BaseSettings):
     app_name: str = Field(default="PC Identidade", title="Nome da aplicação")
     memory_min: int = Field(default=64, title="Limite mínimo de memória disponível em MB")
     disk_usage_max: int = Field(default=80, title="Limite máximo de 80% de uso de disco")
-    app_db_url_mongo: MongoDsn = Field(..., title="URI para o MongoDB")
+    app_db_url_mongo: str = Field(..., title="URI para o MongoDB")
     MONGO_DB: str = Field(..., title="Nome do banco de dados padrão")
 
     KEYCLOAK_URL: str = Field(..., description="URL base do Keycloak")

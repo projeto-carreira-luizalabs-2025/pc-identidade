@@ -32,7 +32,7 @@ COPY --from=constructor /pc-identidade/venv /pc-identidade/venv
 COPY devtools/dotenv.dev /pc-identidade/.env
 
 # Configurações de ambiente para Docker
-ENV APP_DB_URL_MONGO=mongodb://host.docker.internal:27017/bd01?authSource=admin&connectTimeoutMS=1000&socketTimeoutMS=1000
+ENV APP_DB_URL_MONGO="mongodb+srv://admin:admin@cluster0.oszucbv.mongodb.net/pc_identidade?retryWrites=true&w=majority&appName=Cluster0"
 ENV KEYCLOAK_URL=http://host.docker.internal:8080
 ENV KEYCLOAK_REALM_NAME=marketplace
 ENV KEYCLOAK_CLIENT_ID=pc-identidade-client

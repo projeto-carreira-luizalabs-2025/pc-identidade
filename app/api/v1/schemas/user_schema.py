@@ -13,6 +13,14 @@ class UserCreate(BaseModel):
     last_name: str | None = Field(None, description="Sobrenome do usuário.")
 
 
+class LoginRequest(BaseModel):
+    """
+    Schema para autenticação de um usuário (login).
+    """
+    username: str = Field(..., description="Nome de usuário.")
+    password: str = Field(..., description="Senha do usuário.")
+
+
 class UserResponse(BaseModel):
     """
     Schema para a resposta de dados de um usuário do Keycloak.
